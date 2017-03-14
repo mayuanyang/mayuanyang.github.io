@@ -6,9 +6,7 @@ class Menu extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            menu: [].map((item) => {
-                return <li key={item.id}><a href="#">{item.text}</a></li>
-            })
+            menu: []
         }
         var self = this;
         var menuRef = fb.getRecords("/menu/mainmenu");
@@ -52,13 +50,6 @@ class Menu extends Component {
             </nav>
 
         );
-    }
-
-    sendRecordToFirebase() {
-        console.log('clicked');
-        var test = { user: 'Eddy Ma', email: 'ddd@ddd.com' }
-        fb.insertRecord(test, 'menu/main');
-
     }
 }
 
