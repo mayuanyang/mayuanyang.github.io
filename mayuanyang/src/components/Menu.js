@@ -1,20 +1,31 @@
 import React, { Component } from 'react';
 import './AboutMe.css';
-
+import fb from '../modules/FirebaseHelper';
 
 class Menu extends Component {
-    
-    render() {
-        var menu = [
-            {key: 1, name:'My Projects'}, 
-            {key: 2, name:'My Blog'}, 
-            {key: 3, name:'About Me'}
-            ];
-        
-        this.menuItems = menu.map((item) =>{
-            return <li key={item.key}><a href="#">{item.name}</a></li>
+    constructor(props) {
+        super(props);
+        this.state = {
+            menu: [].map((item) => {
+                return <li key={item.id}><a href="#">{item.text}</a></li>
+            })
+        }
+        var self = this;
+        var menuRef = fb.getRecords("/menu/mainmenu");
+        menuRef.on('value', function (snapshot) {
+            var menuItems = (snapshot.val().items);
+            var list = menuItems.map((item) => {
+                    return <li key={item.id}><a href="#">{item.text}</a></li>
+                });
+            
+            self.setState({
+                menu: list
+            });
         });
-        
+    }
+
+
+    render() {
         return (
             <nav className="navbar navbar-default">
                 <div className="container-fluid">
@@ -25,11 +36,11 @@ class Menu extends Component {
                             <span className="icon-bar"></span>
                             <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="#">Eddy Ma</a>
+                        <a className="navbar-brand" href="#" onClick={this.sendRecordToFirebase}>Eddy Ma</a>
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
-                            {this.menuItems}
+                            {this.state.menu}
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
                             <li><a href="#">Right 1</a></li>
@@ -41,6 +52,13 @@ class Menu extends Component {
             </nav>
 
         );
+    }
+
+    sendRecordToFirebase() {
+        console.log('clicked');
+        var test = { user: 'Eddy Ma', email: 'ddd@ddd.com' }
+        fb.insertRecord(test, 'menu/main');
+
     }
 }
 
